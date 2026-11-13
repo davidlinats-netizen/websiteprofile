@@ -52,12 +52,12 @@ export function PortraitCard() {
           }}
         >
         <span className="portrait-face portrait-front" aria-hidden={showBio}>
-          <Image src={portrait} alt="DAVIID wearing glasses and a dark blazer" fill sizes="(max-width: 767px) 300px, (max-width: 1100px) 30vw, 340px" placeholder="blur" loading="eager" />
+          <Image src={portrait} alt="DAVID wearing glasses and a dark blazer" fill sizes="(max-width: 767px) 300px, (max-width: 1100px) 30vw, 340px" placeholder="blur" loading="eager" />
           <span className="portrait-caption"><span>{siteConfig.name}</span><span>Behind the edits</span></span>
         </span>
         <span className="portrait-face portrait-back" aria-hidden={!showBio}>
           <span className="portrait-eyebrow">Behind the edits</span>
-          <span className="portrait-name"><span className="portrait-wave" aria-hidden="true">👋</span><span>I’m daviid</span></span>
+          <span className="portrait-name"><span className="portrait-wave" aria-hidden="true">👋</span><span>I’m David</span></span>
           <span className="portrait-role">Video Editor specializing in AI Ads for DTC Brands, Vibe Coder</span>
           <span className="portrait-bio" id="portrait-bio">I create <strong>AI-powered video ads for DTC brands</strong>, with a focus on AI UGC and promotional creatives for TikTok and Meta.</span>
         </span>

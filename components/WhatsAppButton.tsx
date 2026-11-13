@@ -1,11 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, type CSSProperties } from "react";
-import { siteConfig } from "@/lib/site-config";
+import { useEffect, type RefObject, type CSSProperties } from "react";
 
-export function WhatsAppButton() {
-  const button = useRef<HTMLAnchorElement>(null);
+
+export function WhatsAppButton({ buttonRef: button, expanded, onOpen }: { buttonRef: RefObject<HTMLButtonElement | null>; expanded: boolean; onOpen: () => void }) {
   useEffect(() => {
     let settle: ReturnType<typeof setTimeout>;
     let finish: ReturnType<typeof setTimeout>;
@@ -28,9 +26,9 @@ export function WhatsAppButton() {
     }
     window.addEventListener("portfolio-contact", navigate);
     return () => { clearTimeout(settle); clearTimeout(finish); window.removeEventListener("scroll", onScroll); window.removeEventListener("portfolio-contact", navigate); };
-  }, []);
-  return <a ref={button} id="whatsapp-contact" href={siteConfig.whatsapp || siteConfig.calendly} target="_blank" rel="noopener noreferrer" className="button whatsapp-button">
-    {siteConfig.whatsapp ? <><Image src="/assets/logos/whatsapp.webp" alt="" width={23} height={23} />Let’s chat on WhatsApp</> : "Book a project call"}
+  }, [button]);
+  return <button ref={button} id="whatsapp-contact" type="button" className="button whatsapp-button" aria-expanded={expanded} aria-controls="project-inquiry" onClick={onOpen}>
+    Let&apos;s chat on WhatsApp
     {[-1, 1].map(side => <span className={`contact-sparks ${side < 0 ? "left" : "right"}`} aria-hidden="true" key={side}>{Array.from({ length: 6 }, (_, index) => <i key={index} style={{ "--spark-x": `${(Math.cos(index * Math.PI / 3) * 25).toFixed(4)}px`, "--spark-y": `${(Math.sin(index * Math.PI / 3) * 25).toFixed(4)}px` } as CSSProperties} />)}</span>)}
-  </a>;
+  </button>;
 }

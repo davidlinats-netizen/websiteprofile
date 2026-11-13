@@ -22,8 +22,8 @@ export async function POST(request: Request) {
   const parsed = chatRequestSchema.safeParse(body);
   if (!parsed.success) return json({ error: "Please keep messages under 1,000 characters and start a new conversation if this one is long." }, 400);
   const limit = checkRateLimit(Date.now(), boundedLimit(process.env.CHAT_REQUESTS_PER_MINUTE, 10, 30), boundedLimit(process.env.CHAT_REQUESTS_PER_DAY, 100, 1000));
-  if (!limit.allowed) return json({ error: "The assistant has reached its message limit. Please try later, or contact DAVIID directly." }, 429, { "Retry-After": String(limit.retryAfter) });
-  if (!configured()) return json({ error: "The AI assistant isn’t connected yet. You can still explore the work or contact DAVIID directly." }, 503);
+  if (!limit.allowed) return json({ error: "The assistant has reached its message limit. Please try later, or contact DAVID directly." }, 429, { "Retry-After": String(limit.retryAfter) });
+  if (!configured()) return json({ error: "The AI assistant isn’t connected yet. You can still explore the work or contact DAVID directly." }, 503);
   if (!acquireRequest()) return json({ error: "The assistant is busy. Please try again in a moment." }, 429, { "Retry-After": "10" });
   try {
     const groq = createGroq({ apiKey: process.env.GROQ_API_KEY?.trim() });
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     if (output.samplesRequested) {
       const samples = nextSamples(parsed.data.shownVideoIds, output.sampleCategory);
       const answer = samples.length
-        ? `Here ${samples.length === 1 ? "is another sample" : `are ${samples.length} samples`} from DAVIID’s portfolio:\n\n${samples.map(video => `- **${video.title}** (${video.category})`).join("\n")}\n\nSelect a sample below to watch it.`
+        ? `Here ${samples.length === 1 ? "is another sample" : `are ${samples.length} samples`} from DAVID’s portfolio:\n\n${samples.map(video => `- **${video.title}** (${video.category})`).join("\n")}\n\nSelect a sample below to watch it.`
         : output.sampleCategory
           ? "You’ve seen all the samples in this category. Want to explore another category?"
           : "You’ve seen all 16 portfolio samples in this conversation. You can replay any of them using the earlier sample buttons.";
@@ -54,9 +54,9 @@ export async function POST(request: Request) {
     return json({ answer: answer.slice(0, 2000), videoIds: validVideoIds(output.videoIds).filter(id => !parsed.data.shownVideoIds.includes(id)), offerContact: output.offerContact });
   } catch (error) {
     // Never log provider errors: they may contain request bodies or credentials.
-    if (APICallError.isInstance(error) && error.statusCode === 401) return json({ error: "The assistant’s API key was rejected. DAVIID needs to update the local Groq configuration. Please use WhatsApp for now.", code: "PROVIDER_AUTH" }, 503);
-    if (APICallError.isInstance(error) && [400, 404].includes(error.statusCode ?? 0)) return json({ error: "The assistant’s model configuration needs updating. Please contact DAVIID directly for now.", code: "PROVIDER_MODEL" }, 503);
-    if (APICallError.isInstance(error) && error.statusCode === 429) return json({ error: "The AI provider is busy or its usage limit has been reached. Please try later or contact DAVIID directly." }, 429, { "Retry-After": "60" });
-    return json({ error: "The assistant couldn?t reply right now. Please try again, or continue with DAVIID on WhatsApp or Calendly." }, 503);
+    if (APICallError.isInstance(error) && error.statusCode === 401) return json({ error: "The assistant’s API key was rejected. DAVID needs to update the local Groq configuration. Please use WhatsApp for now.", code: "PROVIDER_AUTH" }, 503);
+    if (APICallError.isInstance(error) && [400, 404].includes(error.statusCode ?? 0)) return json({ error: "The assistant’s model configuration needs updating. Please contact DAVID directly for now.", code: "PROVIDER_MODEL" }, 503);
+    if (APICallError.isInstance(error) && error.statusCode === 429) return json({ error: "The AI provider is busy or its usage limit has been reached. Please try later or contact DAVID directly." }, 429, { "Retry-After": "60" });
+    return json({ error: "The assistant couldn?t reply right now. Please try again, or continue with DAVID on WhatsApp or Calendly." }, 503);
   } finally { releaseRequest(); }
 }

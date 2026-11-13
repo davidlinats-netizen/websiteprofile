@@ -1,0 +1,35 @@
+import { test, expect } from '@playwright/test';
+test.use({ channel: 'chrome', reducedMotion: 'no-preference' });
+test('gallery filters do not replace standalone feature; nav, tools and motion', async ({ page }) => {
+  await page.setViewportSize({width:1280,height:900});
+  await page.goto('http://127.0.0.1:3210/');
+  const nav = page.getByRole('navigation', {name:'Main navigation'});
+  await expect(nav.getByRole('link').nth(0)).toHaveText('About');
+  await expect(nav.getByRole('link').nth(1)).toHaveText('Work');
+  const stage = page.locator('.work-inline-stage');
+  const toolbar = page.locator('.work-toolbar');
+  expect((await toolbar.boundingBox())!.y).toBeGreaterThan((await stage.boundingBox())!.y + (await stage.boundingBox())!.height);
+  await page.getByRole('button',{name:'Talking Head',exact:true}).click();
+  await expect(stage.getByRole('heading',{name:'Sea-view property tour'})).toBeVisible();
+  await page.locator('.video-card').first().click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  const icon = page.locator('.service-item svg').first();
+  await page.locator('.service-item').first().hover();
+  expect(await icon.evaluate(el=>getComputedStyle(el).animationName)).not.toBe('none');
+  expect((await page.locator('.tools-category').first().boundingBox())!.height).toBeLessThan(260);
+  await expect(page.locator('.blueprint-background')).toHaveCount(1);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  expect(await icon.evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
+});
+test('expanded About and compact mobile layout',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('http://127.0.0.1:3210/about');
+  await expect(page.getByRole('heading',{name:'What I bring to an edit'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Beyond the timeline'})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:'cache/about-refined-mobile.png',fullPage:true});
+  await page.goto('http://127.0.0.1:3210/');
+  await expect(page.locator('.tools-category')).toHaveCount(5);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});

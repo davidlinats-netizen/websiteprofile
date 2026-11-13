@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useId, type ReactNode } from "react";
 
 export function Marquee({ renderItems, paused, direction, className = "", label, controllerRef, speed = 25, pauseOnHover = true }: {
   renderItems: (duplicate: boolean) => ReactNode;
@@ -12,9 +12,12 @@ export function Marquee({ renderItems, paused, direction, className = "", label,
   pauseOnHover?: boolean;
   controllerRef?: React.RefObject<((direction: number) => void) | null>;
 }) {
+  const descriptionId = useId();
   const viewport = useRef<HTMLDivElement>(null);
   const group = useRef<HTMLDivElement>(null);
   const interaction = useRef(false);
+  const drag = useRef<{ id: number; startX: number; scroll: number } | null>(null);
+  const dragged = useRef(false);
   const [enhanced, setEnhanced] = useState(false);
   const [copies, setCopies] = useState(1);
   useEffect(() => {
@@ -63,14 +66,51 @@ export function Marquee({ renderItems, paused, direction, className = "", label,
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [enhanced, paused, direction, speed]);
+  function updateInteraction(element: HTMLDivElement) {
+    const keyboardFocused = element.matches(":focus-visible") || Boolean(element.querySelector(":focus-visible"));
+    interaction.current = Boolean(drag.current) || keyboardFocused || (pauseOnHover && element.matches(":hover"));
+  }
   function renderGroup(duplicate: boolean) {
     return Array.from({ length: enhanced ? copies : 1 }, (_, index) => <div className="marquee-set" key={index} aria-hidden={duplicate || index > 0 ? true : undefined}>{renderItems(duplicate || index > 0)}</div>);
   }
-  return <div className={`marquee-viewport ${className}`} ref={viewport} role="region" aria-label={label} tabIndex={controllerRef ? 0 : undefined}
-    onPointerEnter={() => { if (pauseOnHover) interaction.current = true; }} onPointerLeave={event => { interaction.current = event.currentTarget.contains(document.activeElement); }}
+  return <div className={`marquee-viewport ${className}`} ref={viewport} role="region" aria-label={label} tabIndex={0} aria-describedby={descriptionId}
+    onDragStart={event => event.preventDefault()}
+    onPointerDown={event => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      dragged.current = false;
+      drag.current = { id: event.pointerId, startX: event.clientX, scroll: event.currentTarget.scrollLeft };
+      interaction.current = true;
+    }}
+    onPointerMove={event => {
+      const active = drag.current;
+      if (!active || active.id !== event.pointerId) return;
+      const delta = event.clientX - active.startX;
+      if (!dragged.current && Math.abs(delta) < 6) return;
+      dragged.current = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.scrollLeft = active.scroll - delta;
+      event.preventDefault();
+    }}
+    onPointerUp={event => {
+      if (drag.current?.id !== event.pointerId) return;
+      drag.current = null;
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+      updateInteraction(event.currentTarget);
+    }}
+    onPointerCancel={event => { drag.current = null; dragged.current = false; updateInteraction(event.currentTarget); }}
+    onLostPointerCapture={event => { drag.current = null; updateInteraction(event.currentTarget); }}
+    onClickCapture={event => { if (dragged.current) { event.preventDefault(); event.stopPropagation(); dragged.current = false; } }}
+    onKeyDown={event => {
+      if (event.target !== event.currentTarget || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      event.preventDefault();
+      interaction.current = true;
+      event.currentTarget.scrollLeft += (event.key === "ArrowRight" ? 1 : -1) * Math.min(event.currentTarget.clientWidth * .7, 540);
+    }}
+    onPointerEnter={() => { if (pauseOnHover) interaction.current = true; }} onPointerLeave={event => { updateInteraction(event.currentTarget); }}
     onTouchStart={() => { interaction.current = true; }} onTouchEnd={() => { interaction.current = false; }}
     onTouchCancel={() => { interaction.current = false; }}
-    onFocusCapture={() => { interaction.current = true; }} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) interaction.current = pauseOnHover && event.currentTarget.matches(":hover"); }}>
+    onFocusCapture={event => { updateInteraction(event.currentTarget); }} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) interaction.current = Boolean(drag.current) || (pauseOnHover && event.currentTarget.matches(":hover")); }}>
+    <span className="sr-only" id={descriptionId}>Drag or swipe to browse. When focused, use the left and right arrow keys.</span>
     <div className="marquee-track">
       {enhanced && <div ref={group} className="marquee-group" aria-hidden="true">{renderGroup(true)}</div>}
       <div ref={enhanced ? undefined : group} className="marquee-group">{renderGroup(false)}</div>

@@ -1,0 +1,86 @@
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+
+test.use({ channel: "chrome", reducedMotion: "reduce" });
+const origin = "http://127.0.0.1:3210";
+
+test("uploaded sample plays inline and explanations follow actual playback and seeking", async ({ page }) => {
+  await page.goto(`${origin}/#behind-the-edit`);
+  const section = page.locator("#behind-the-edit");
+  await expect(section.getByRole("heading", { name: "Sample edit", exact: true })).toBeVisible();
+  const video = section.locator("video");
+  await expect(video).toHaveAttribute("src", "/assets/video/sample-edit.mp4");
+  await expect(section.locator("iframe")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await expect(section.getByText("Eon at Shenton", { exact: true })).toHaveCount(0);
+  expect(await section.evaluate(el => Boolean(el.compareDocumentPosition(document.querySelector("#work")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThanOrEqual(1);
+  expect(await video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
+  expect(await video.evaluate((el: HTMLVideoElement) => el.duration)).toBeGreaterThan(87);
+  await video.evaluate(async (el: HTMLVideoElement) => { el.muted = true; await el.play(); });
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime)).toBeGreaterThan(0.5);
+  await video.evaluate((el: HTMLVideoElement) => { el.pause(); el.currentTime = 32; });
+  await expect(section.getByRole("heading", { name: "The main selling point", exact: true })).toBeVisible();
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 85; });
+  await expect(section.getByRole("heading", { name: "Closing on the offer", exact: true })).toBeVisible();
+  await expect(section.getByText(/not an explicit contact call to action/)).toBeVisible();
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 1; });
+  await expect(section.getByRole("heading", { name: "Visual hook", exact: true })).toBeVisible();
+  await expect(section.locator(".breakdown-explanation")).toHaveCSS("animation-name", "none");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 10; });
+  await expect(section.getByRole("heading", { name: "Who the property is for", exact: true })).toBeVisible();
+  await expect(section.locator(".breakdown-explanation")).toHaveCSS("animation-duration", "0.15s");
+  await section.locator(".breakdown-video-frame").hover();
+  await expect(section.getByText("Safe zone", { exact: true })).toBeVisible();
+  await expect(section.locator(".breakdown-safe-zone")).toBeVisible();
+  await section.getByRole("button", { name: "Show edit labels" }).click();
+  await section.locator(".breakdown-video-frame").screenshot({ path: "E:/My portfolio/cache/video-analysis/eon-shenton/timed-safe-zone.png" });
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 2.75; });
+  await expect(section.getByText("Animated caption", { exact: true })).toBeVisible();
+  await expect(section.locator(".breakdown-track-box")).toHaveCount(2);
+  await section.screenshot({ path: "E:/My portfolio/cache/video-analysis/eon-shenton/timed-opening.png" });
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 5; });
+  await expect(section.locator(".breakdown-track-box")).toHaveCount(0);
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 86.3; });
+  await expect(section.getByText("Price", { exact: true })).toBeVisible();
+  await expect(section.locator(".breakdown-track-box")).toHaveCount(1);
+  await section.screenshot({ path: "E:/My portfolio/cache/video-analysis/eon-shenton/timed-price.png" });
+  await expect(section.getByText("Sound effects", { exact: true })).toBeVisible();
+  await expect(section.locator("canvas")).toHaveCount(3);
+  await video.evaluate(async (el: HTMLVideoElement) => { el.currentTime = 20; el.muted = false; el.volume = 0.01; await el.play(); });
+  await expect.poll(async () => Number(await section.locator("canvas").first().getAttribute("data-peak"))).toBeGreaterThan(0);
+  await video.evaluate((el: HTMLVideoElement) => el.pause());
+  await expect(section.locator("canvas").first()).toHaveAttribute("data-playing", "false");
+  await section.screenshot({ path: "E:/My portfolio/cache/video-analysis/eon-shenton/sample-edit-desktop.png" });
+});
+
+test("mobile supports tap labels, light mode and accessible explanations", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${origin}/#behind-the-edit`);
+  const section = page.locator("#behind-the-edit");
+  await expect(section.getByRole("heading", { name: "Sample edit", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Switch to light mode" }).click();
+  await section.getByRole("button", { name: "Show edit labels" }).click();
+  await expect(section.getByRole("button", { name: "Hide edit labels" })).toHaveAttribute("aria-pressed", "true");
+  await expect(section.locator(".breakdown-callouts")).toHaveCSS("opacity", "1");
+  const video = section.locator("video");
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThanOrEqual(1);
+  await video.evaluate((el: HTMLVideoElement) => { el.currentTime = 2.75; });
+  await expect(section.getByText("Animated caption", { exact: true })).toBeVisible();
+  const label = await section.locator(".breakdown-annotation-label").boundingBox();
+  const frame = await section.locator(".breakdown-video-frame").boundingBox();
+  expect(label!.y + label!.height).toBeLessThanOrEqual(frame!.y);
+  await expect(section.locator(".breakdown-callouts")).toHaveCSS("transition-duration", "0s");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const a11y = await new AxeBuilder({ page }).include("#behind-the-edit").analyze();
+  expect(a11y.violations).toEqual([]);
+  await section.screenshot({ path: "E:/My portfolio/cache/video-analysis/eon-shenton/sample-edit-mobile.png" });
+});
+
+test("failed media offers a clear fallback rather than a silent broken player", async ({ page }) => {
+  await page.route("**/assets/video/sample-edit.mp4", route => route.abort());
+  await page.goto(`${origin}/#behind-the-edit`);
+  await expect(page.getByText("The video could not load. Try reloading, or open the video file directly.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open video file" })).toHaveAttribute("href", "/assets/video/sample-edit.mp4");
+});

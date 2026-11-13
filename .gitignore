@@ -7,3 +7,9 @@ out/
 .tools/
 .verification/
 npm-debug.log*
+
+# runtime / test artifacts (not part of the shipped portfolio)
+.logs/
+cache/
+test-results/
+npm.cmd

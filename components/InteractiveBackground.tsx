@@ -51,7 +51,7 @@ export function InteractiveBackground() {
       canvas.height = Math.round(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       // Thousands of particles on desktop; a smaller budget on mobile.
-      const count = width < 768 ? 1500 : Math.min(6500, Math.max(4200, Math.round(width * height / 220)));
+      const count = width < 768 ? 500 : Math.min(2600, Math.max(1600, Math.round(width * height / 440)));
       particles = Array.from({ length: count }, () => ({
         progress: Math.random(), lane: Math.random(),
         spread: (Math.random() - 0.5) * (Math.random() < 0.85 ? 1 : 3),

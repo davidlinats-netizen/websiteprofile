@@ -1,0 +1,60 @@
+const { chromium } = require('@playwright/test');
+const assert = require('node:assert/strict');
+(async () => {
+ const browser = await chromium.launch({ channel: 'msedge', headless: true });
+ try {
+  for (const [width, theme] of [[1440, 'dark'], [390, 'dark'], [1440, 'light'], [390, 'light']]) {
+   const page = await browser.newPage({ viewport: { width, height: 650 }, reducedMotion: 'no-preference' });
+   await page.addInitScript(theme => localStorage.setItem('daviid-theme', theme), theme);
+   await page.goto('http://127.0.0.1:3000/about', { waitUntil: 'networkidle' });
+   const signature = page.getByRole('img', { name: 'David Linatoc signature', exact: true });
+   await page.waitForFunction(() => document.querySelector('.about-signature')?.dataset.phase === 'waiting', null, { timeout: 4000 });
+   await signature.scrollIntoViewIfNeeded();
+   await page.waitForFunction(() => document.querySelector('.about-signature').dataset.phase === 'running');
+   await page.waitForTimeout(650);
+   const progress = await signature.locator('.signature-trace').evaluateAll(paths => paths.map(p => ({ offset: Number(p.style.strokeDashoffset), length: Number(p.dataset.length) })));
+   assert.ok(progress.some(p => p.offset < p.length), 'Some strokes revealed');
+   assert.ok(progress.some(p => p.offset > 0), 'Later strokes still hidden');
+   assert.ok(await signature.locator('.signature-smoke path').evaluateAll(paths => paths.some(p => Number(p.style.opacity) > 0)), 'Smoke at writing tip');
+   await page.waitForFunction(() => document.querySelector('.about-signature').dataset.phase === 'complete');
+   assert.equal(await signature.locator('.signature-art').getAttribute('mask'), null, 'Final original artwork unmasked');
+   assert.equal(await signature.locator('.signature-smoke path').evaluateAll(paths => paths.every(p => Number(p.style.opacity) === 0)), true, 'Smoke fully dissipated');
+   const photo = await page.locator('.about-photo').boundingBox(), box = await signature.boundingBox();
+   assert.ok(Math.abs(photo.x + photo.width / 2 - box.x - box.width / 2) < 1, 'Centered under photo');
+   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+   await page.evaluate(() => window.scrollTo(0,0));
+   await signature.scrollIntoViewIfNeeded();
+   assert.equal(await signature.getAttribute('data-phase'), 'complete', 'Does not replay on scrolling');
+   await page.emulateMedia({ reducedMotion: 'reduce' });
+   await page.reload({ waitUntil: 'networkidle' });
+   await signature.scrollIntoViewIfNeeded();
+   await page.waitForFunction(() => document.querySelector('.about-signature').dataset.phase === 'complete');
+   assert.equal(await signature.locator('.signature-art').getAttribute('mask'), null);
+   assert.equal(await signature.locator('.signature-smoke path').evaluateAll(paths => paths.every(p => Number(p.style.opacity) === 0)), true);
+   console.log(`PASS ${width} ${theme}: sequential reveal + smoke, settles original, centered, no replay, reduced-motion static`);
+   await page.close();
+  }
+  const live = await browser.newPage({ viewport: { width: 390, height: 650 }, reducedMotion: 'no-preference' });
+  await live.goto('http://127.0.0.1:3000/about', { waitUntil: 'networkidle' });
+  await live.locator('.about-signature').scrollIntoViewIfNeeded();
+  await live.waitForFunction(() => document.querySelector('.about-signature').dataset.phase === 'running');
+  await live.emulateMedia({ reducedMotion: 'reduce' });
+  await live.waitForFunction(() => document.querySelector('.about-signature').dataset.phase === 'complete');
+  await live.emulateMedia({ reducedMotion: 'no-preference' });
+  assert.equal(await live.locator('.signature-art').getAttribute('mask'), null);
+  await live.waitForTimeout(200);
+  assert.equal(await live.locator('.about-signature').getAttribute('data-phase'), 'complete');
+  await live.getByRole('link', { name: 'Back to portfolio' }).click();
+  await live.waitForURL('http://127.0.0.1:3000/');
+  assert.equal(await live.locator('.about-signature').count(), 0);
+  console.log('PASS: changing reduced motion mid-animation settles immediately; route unmount works');
+  await live.close();
+  const plain = await browser.newPage({ javaScriptEnabled: false });
+  await plain.goto('http://127.0.0.1:3000/about', { waitUntil: 'networkidle' });
+  assert.equal(await plain.locator('.about-signature').getAttribute('data-phase'), 'static');
+  assert.equal(await plain.locator('.signature-art').getAttribute('mask'), null);
+  assert.ok((await plain.request.get('http://127.0.0.1:3000/assets/images/david-signature.svg')).ok());
+  console.log('PASS: no-JavaScript fallback retains original signature');
+  await plain.close();
+ } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exit(1); });

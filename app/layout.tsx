@@ -12,9 +12,9 @@ import "./assistant.css";
 const display = localFont({ src: "../public/assets/fonts/barlow-condensed-bold.ttf", variable: "--font-display", display: "swap", weight: "700" });
 const body = localFont({ src: "../public/assets/fonts/manrope.ttf", variable: "--font-body", display: "swap", weight: "200 800" });
 export const metadata: Metadata = {
-  title: "DAVIID | Video editor & AI-content creator",
+  title: "DAVID | Video editor & AI-content creator",
   description: siteConfig.introduction,
-  openGraph: { title: "DAVIID | Your ideas Worth watching", description: siteConfig.introduction, type: "website" },
+  openGraph: { title: "DAVID | Your ideas Worth watching", description: siteConfig.introduction, type: "website" },
   robots: { index: true, follow: true },
 };
 const themeScript = `(function(){try{var t=localStorage.getItem('daviid-theme');document.documentElement.dataset.theme=t==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}})()`;

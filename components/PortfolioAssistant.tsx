@@ -68,7 +68,7 @@ export function PortfolioAssistant() {
       if (typeof data.answer !== "string" || !Array.isArray(data.videoIds)) throw new Error("The reply couldn’t be read. Please try again.");
       setMessages(current => [...current, { role: "assistant", content: data.answer, videoIds: validVideoIds(data.videoIds.filter((id: unknown) => typeof id === "string")), offerContact: Boolean(data.offerContact) }]);
     } catch (caught) {
-      if (dialog.current?.open) setError(controller.signal.aborted ? "The reply took too long. Please try again or contact DAVIID directly." : caught instanceof Error ? caught.message : "The assistant couldn’t connect. Please try again.");
+      if (dialog.current?.open) setError(controller.signal.aborted ? "The reply took too long. Please try again or contact DAVID directly." : caught instanceof Error ? caught.message : "The assistant couldn’t connect. Please try again.");
     } finally { clearTimeout(timer); setLoading(false); }
   }
   function submit(event: FormEvent) { event.preventDefault(); void send(draft); }
@@ -79,18 +79,18 @@ export function PortfolioAssistant() {
     </button>
     <dialog ref={dialog} className="chat-dialog" aria-labelledby="chat-title" onKeyDown={containDialogFocus} onCancel={event => { event.preventDefault(); close(); }} onClick={event => { if (event.target === dialog.current) close(); }}>
       <div className="chat-shell"><header className="chat-header">
-        <div className="chat-heading"><h2 id="chat-title">DAVIID’s assistant</h2><p className={`chat-connection chat-connection--${availability}`}><span aria-hidden="true" />{availability === "ready" ? "Ready to help" : availability === "checking" ? "Connecting…" : "Connection unavailable"}</p></div>
+        <div className="chat-heading"><h2 id="chat-title">DAVID’s assistant</h2><p className={`chat-connection chat-connection--${availability}`}><span aria-hidden="true" />{availability === "ready" ? "Ready to help" : availability === "checking" ? "Connecting…" : "Connection unavailable"}</p></div>
         <button className="icon-button" aria-label="Start a new conversation" disabled={loading} onClick={() => { setMessages([]); setDraft(""); setError(""); input.current?.focus(); }}><ArrowCounterClockwise size={18} aria-hidden="true" /></button>
         <button className="icon-button" aria-label="Close AI assistant" onClick={close} autoFocus><X size={21} aria-hidden="true" /></button>
       </header>
       <div className="chat-transcript" ref={transcript} role="log" aria-live="polite" aria-relevant="additions text">
         {messages.length === 0 && <div className="chat-welcome">
-          <h3>What can I help you create?</h3><p>I’m DAVIID’s AI assistant. Ask about services, explore the work, or share a project idea.</p>
+          <h3>What can I help you create?</h3><p>I’m DAVID’s AI assistant. Ask about services, explore the work, or share a project idea.</p>
         </div>}
         {availability === "checking" && <p className="chat-notice" role="status">Checking assistant connection…</p>}
-        {availability === "unavailable" && <div className="chat-notice" role="status"><strong>The assistant isn’t connected right now.</strong><p>You can explore all {videos.length} edits on the page, or contact DAVIID through the contact section on the page.</p><button className="text-link" onClick={() => { setAvailability("checking"); setConnectionAttempt(attempt => attempt + 1); }}>Try connection again</button></div>}
+        {availability === "unavailable" && <div className="chat-notice" role="status"><strong>The assistant isn’t connected right now.</strong><p>You can explore all {videos.length} edits on the page, or contact DAVID through the contact section on the page.</p><button className="text-link" onClick={() => { setAvailability("checking"); setConnectionAttempt(attempt => attempt + 1); }}>Try connection again</button></div>}
         {messages.length === 0 && availability === "ready" && <div className="suggested-questions">{questions.map(question => <button key={question} onClick={() => void send(question)}>{question}<ArrowUpRight size={15} aria-hidden="true" /></button>)}</div>}
-        {messages.map((message, index) => <div key={index} className={`chat-message ${message.role}`}><span className="chat-message-author">{message.role === "user" ? "You" : "DAVIID’s assistant"}</span>{message.role === "assistant" ? <div className="chat-markdown"><Markdown skipHtml disallowedElements={["img", "a"]} unwrapDisallowed>{message.content}</Markdown></div> : <p>{message.content}</p>}{message.videoIds?.map(id => { const video = findVideo(id); return video ? <button className="sample-button" key={id} onClick={() => play(id)}><Play size={15} weight="fill" aria-hidden="true" /><span>{video.title}</span><ArrowUpRight size={14} aria-hidden="true" /></button> : null; })}{message.offerContact && <a className="chat-inline-contact" href={siteConfig.whatsapp || siteConfig.calendly} target="_blank" rel="noopener noreferrer">Continue with DAVIID <ArrowUpRight size={14} aria-hidden="true" /></a>}</div>)}
+        {messages.map((message, index) => <div key={index} className={`chat-message ${message.role}`}><span className="chat-message-author">{message.role === "user" ? "You" : "DAVID’s assistant"}</span>{message.role === "assistant" ? <div className="chat-markdown"><Markdown skipHtml disallowedElements={["img", "a"]} unwrapDisallowed>{message.content}</Markdown></div> : <p>{message.content}</p>}{message.videoIds?.map(id => { const video = findVideo(id); return video ? <button className="sample-button" key={id} onClick={() => play(id)}><Play size={15} weight="fill" aria-hidden="true" /><span>{video.title}</span><ArrowUpRight size={14} aria-hidden="true" /></button> : null; })}{message.offerContact && <a className="chat-inline-contact" href={siteConfig.whatsapp || siteConfig.calendly} target="_blank" rel="noopener noreferrer">Continue with DAVID <ArrowUpRight size={14} aria-hidden="true" /></a>}</div>)}
         {loading && <div className="chat-loading" role="status">Thinking…</div>}
         {error && <p className="chat-error" role="alert">{error}</p>}
       </div>

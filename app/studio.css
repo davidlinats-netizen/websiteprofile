@@ -94,7 +94,7 @@ html { scroll-padding-top:110px; }
 .service-item svg { color:var(--lilac); margin-bottom:18px; }
 .service-item h3 { font-size:17px; }
 .service-item p { font-size:13px; }
-.services-grid .service-item:hover svg { animation:none; }
+
 .tools-section { padding-block:80px; }
 .tools-heading h2 { font-size:50px; }
 .contact-section { margin:0 24px; padding-top:90px; border-radius:32px 32px 0 0; background:var(--accent); color:var(--accent-text); }

@@ -1,0 +1,368 @@
+{
+  "cues": [
+    {
+      "start": 0.05,
+      "end": 0.58,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 0.05,
+          "x": 0.349,
+          "y": 0.496,
+          "width": 0.303,
+          "height": 0.034
+        },
+        {
+          "time": 0.58,
+          "x": 0.349,
+          "y": 0.496,
+          "width": 0.303,
+          "height": 0.034
+        }
+      ]
+    },
+    {
+      "start": 0.6,
+      "end": 0.9,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 0.6,
+          "x": 0.367,
+          "y": 0.496,
+          "width": 0.269,
+          "height": 0.033
+        },
+        {
+          "time": 0.9,
+          "x": 0.367,
+          "y": 0.496,
+          "width": 0.269,
+          "height": 0.033
+        }
+      ]
+    },
+    {
+      "start": 0.95,
+      "end": 1.2,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 0.95,
+          "x": 0.428,
+          "y": 0.496,
+          "width": 0.147,
+          "height": 0.033
+        },
+        {
+          "time": 1.2,
+          "x": 0.428,
+          "y": 0.496,
+          "width": 0.147,
+          "height": 0.033
+        }
+      ]
+    },
+    {
+      "start": 1.25,
+      "end": 2.1,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 1.25,
+          "x": 0.315,
+          "y": 0.487,
+          "width": 0.372,
+          "height": 0.038
+        },
+        {
+          "time": 1.5,
+          "x": 0.315,
+          "y": 0.462,
+          "width": 0.372,
+          "height": 0.038
+        },
+        {
+          "time": 1.75,
+          "x": 0.315,
+          "y": 0.462,
+          "width": 0.372,
+          "height": 0.038
+        },
+        {
+          "time": 2.1,
+          "x": 0.315,
+          "y": 0.462,
+          "width": 0.372,
+          "height": 0.038
+        }
+      ]
+    },
+    {
+      "start": 1.55,
+      "end": 2.1,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 1.55,
+          "x": 0.194,
+          "y": 0.506,
+          "width": 0.611,
+          "height": 0.051
+        },
+        {
+          "time": 1.65,
+          "x": 0.194,
+          "y": 0.492,
+          "width": 0.611,
+          "height": 0.057
+        },
+        {
+          "time": 1.75,
+          "x": 0.194,
+          "y": 0.492,
+          "width": 0.611,
+          "height": 0.057
+        },
+        {
+          "time": 2.1,
+          "x": 0.194,
+          "y": 0.492,
+          "width": 0.611,
+          "height": 0.057
+        }
+      ]
+    },
+    {
+      "start": 2.15,
+      "end": 3.75,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 2.15,
+          "x": 0.365,
+          "y": 0.483,
+          "width": 0.272,
+          "height": 0.033
+        },
+        {
+          "time": 3.75,
+          "x": 0.365,
+          "y": 0.483,
+          "width": 0.272,
+          "height": 0.033
+        }
+      ]
+    },
+    {
+      "start": 2.5,
+      "end": 3.75,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 2.5,
+          "x": 0.125,
+          "y": 0.512,
+          "width": 0.122,
+          "height": 0.044
+        },
+        {
+          "time": 2.75,
+          "x": 0.125,
+          "y": 0.512,
+          "width": 0.204,
+          "height": 0.044
+        },
+        {
+          "time": 3,
+          "x": 0.125,
+          "y": 0.512,
+          "width": 0.36,
+          "height": 0.044
+        },
+        {
+          "time": 3.25,
+          "x": 0.125,
+          "y": 0.512,
+          "width": 0.664,
+          "height": 0.044
+        },
+        {
+          "time": 3.5,
+          "x": 0.125,
+          "y": 0.512,
+          "width": 0.751,
+          "height": 0.044
+        },
+        {
+          "time": 3.75,
+          "x": 0.125,
+          "y": 0.512,
+          "width": 0.751,
+          "height": 0.044
+        }
+      ]
+    },
+    {
+      "start": 3.85,
+      "end": 4.4,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 3.85,
+          "x": 0.347,
+          "y": 0.475,
+          "width": 0.306,
+          "height": 0.03
+        },
+        {
+          "time": 4.4,
+          "x": 0.347,
+          "y": 0.475,
+          "width": 0.306,
+          "height": 0.03
+        }
+      ]
+    },
+    {
+      "start": 4,
+      "end": 5,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 4,
+          "x": 0.257,
+          "y": 0.416,
+          "width": 0.035,
+          "height": 0.055
+        },
+        {
+          "time": 4.25,
+          "x": 0.257,
+          "y": 0.416,
+          "width": 0.243,
+          "height": 0.055
+        },
+        {
+          "time": 4.5,
+          "x": 0.257,
+          "y": 0.416,
+          "width": 0.358,
+          "height": 0.055
+        },
+        {
+          "time": 4.75,
+          "x": 0.257,
+          "y": 0.416,
+          "width": 0.46,
+          "height": 0.055
+        },
+        {
+          "time": 5,
+          "x": 0.257,
+          "y": 0.416,
+          "width": 0.486,
+          "height": 0.055
+        }
+      ]
+    },
+    {
+      "start": 4.5,
+      "end": 4.95,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 4.5,
+          "x": 0.343,
+          "y": 0.475,
+          "width": 0.311,
+          "height": 0.03
+        },
+        {
+          "time": 4.95,
+          "x": 0.343,
+          "y": 0.475,
+          "width": 0.311,
+          "height": 0.03
+        }
+      ]
+    },
+    {
+      "start": 5,
+      "end": 5,
+      "kind": "caption",
+      "keyframes": [
+        {
+          "time": 5,
+          "x": 0.399,
+          "y": 0.475,
+          "width": 0.203,
+          "height": 0.03
+        }
+      ]
+    },
+    {
+      "start": 86.15,
+      "end": 87,
+      "kind": "price",
+      "keyframes": [
+        {
+          "time": 86.15,
+          "x": 0.122,
+          "y": 0.245,
+          "width": 0.753,
+          "height": 0.071
+        },
+        {
+          "time": 86.2,
+          "x": 0.125,
+          "y": 0.245,
+          "width": 0.75,
+          "height": 0.071
+        },
+        {
+          "time": 86.3,
+          "x": 0.133,
+          "y": 0.245,
+          "width": 0.736,
+          "height": 0.071
+        },
+        {
+          "time": 86.55,
+          "x": 0.147,
+          "y": 0.25,
+          "width": 0.713,
+          "height": 0.064
+        },
+        {
+          "time": 86.8,
+          "x": 0.147,
+          "y": 0.25,
+          "width": 0.713,
+          "height": 0.064
+        },
+        {
+          "time": 87,
+          "x": 0.147,
+          "y": 0.25,
+          "width": 0.713,
+          "height": 0.064
+        }
+      ]
+    }
+  ],
+  "method": "Manually authored, visually reviewed approximate full-frame bounds; not automatic tracking. Times in seconds; normalized x/y are upper-left. Interpolate keyframes only inside each cue. Render zero-duration cue at exact sample only.",
+  "uncertainty": "Bounds are approximate (roughly 5-15 px, larger during fades/typewriter reveals). Timing between observed samples is uncertain, usually 0.05-0.25 s. Unobserved gaps intentionally have no boxes; do not hold boxes through gaps. Opening cost caption is observed only at requested 5.0 s boundary. Final price observed through 87.0 s; last 0.05 s not established.",
+  "evidence": {
+    "frame_size": [
+      720,
+      1280
+    ],
+    "sampling": "Quarter-second opening and ending samples plus 27 transition samples, visually reviewed in sheets and selected full-size frames. No caption at 0.0 or 3.8 s; no yellow closing price at 86.1 s; visible at 86.15 s. White closing captions excluded. Opening yellow words and masked price classified caption. White typewriter cursor alone excluded.",
+    "contact_sheets": [
+      "opening-contact-sheet.jpg",
+      "closing-contact-sheet.jpg",
+      "transition-contact-sheet.jpg"
+    ]
+  }
+}
