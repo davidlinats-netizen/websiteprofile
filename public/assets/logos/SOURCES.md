@@ -16,6 +16,6 @@ Approved additions: After Effects, ElevenLabs, Slack, Google Meet, Dropbox, Fram
 
 Monochrome ElevenLabs and WeTransfer assets have light variants for dark mode.
 
-- monday.com: https://api.iconify.design/logos/monday-icon.svg
+- Lark: https://commons.wikimedia.org/wiki/File:Lark_Suite_logo_2022.png (Wikimedia Commons, current brand mark)
 
 - Hubstaff: https://www.google.com/s2/favicons?domain=hubstaff.com&sz=128 (site favicon)

@@ -106,6 +106,11 @@ export const toolLogos = [
     "category": "communication"
   },
   {
+    "name": "Lark",
+    "file": "lark.webp",
+    "category": "communication"
+  },
+  {
     "name": "Trello",
     "file": "trello.webp",
     "category": "planning"
